@@ -39,8 +39,8 @@ pinMode(5,OUTPUT);
 pinMode(6,OUTPUT);
 digitalWrite(EC_Isolator, HIGH);
 digitalWrite(EC_GND_Wire, LOW); 
-//
-// Calibrate (); // After calibration put two forward slashes before this line of code
+// căn chỉnh hệ số k theo chất liệu đầu đo
+ Calibrate (); // sau khi căn chỉnh đặt '//' ở đầu dòng
 //
 }
 
@@ -56,18 +56,24 @@ GETpH();
 Serial.println("\npH Val: ");
 Serial.print(ph_act);
 //
-if ((6 <= ph_act)&&(ph_act <= 7.5)) 
+if ((6 <= ph_act)&&(ph_act <= 7.5)) // có thể đặt biến thay đổi theo biến trở
 {   
 } 
 while (ph_act < 6) 
 {
 GETpH();
+delay(1000);
 digitalWrite(3, LOW);
+delay(2000);
+digitalWrite(3,HIGH);
 }
 while (ph_act > 7.5) 
 {
 GETpH();
+delay(1000);
 digitalWrite(4, LOW);
+delay(2000);
+digitalWrite(4, HIGH);
 }
 digitalWrite(EC_Isolator,LOW); 
 digitalWrite(EC_GND_Wire, HIGH);
@@ -81,20 +87,23 @@ Serial.print(" ppm ");
 Serial.print(Temperature);
 Serial.print(" *C ");
 //
-if ((4 <= EC_at_25)&&(EC_at_25 <= 5))
+if ((2 <= EC_at_25)&&(EC_at_25 <= 2,5))
 {
 }
-while(EC_at_25 < 4 )
+while(EC_at_25 < 2 )
 {
 GETEC();
+delay(1000);
 digitalWrite(5,LOW);
+delay(2000);
+digitalWrite(5, HIGH);
 }
-while(EC_at_25 > 5 )
+while(EC_at_25 > 2,5 )
 {
 GETEC();
 // cài đặt van mở nước vào bình chứa 
 }
-delay(6000);
+delay(4000);
 }
 void GETpH()
 {
@@ -182,7 +191,7 @@ EC =CalibrationEC*(1+(Temp_Coef*(Temperature_end-25.0)));
 Vdrop= (((Vin)*(A_to_D))/1024.0);
 R_Water=(Vdrop*R1)/(Vin-Vdrop);
 float K_cal= 1000/(R_Water*EC);
-Serial.print("Replace K with K = ");
+Serial.print("Thay thế K = ");
 Serial.println(K_cal);
 Serial.print("Temperature difference start to end were = ");
 Temp_C=Temperature_end-Temperature_begin;

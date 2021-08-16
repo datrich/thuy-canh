@@ -7,13 +7,14 @@ float Temp_F;
 float Temp1_Value = 0;
 float Temp_Coef = 0.019; 
 float Calibration_PPM =1080 ;
-float K=1.89; 
+float K=1.7; 
 float PPM_Con=0.5; 
 float CalibrationEC= (Calibration_PPM*2)/1000;
 float Temperature;
 float EC;
 float EC_at_25;
 int ppm;
+int a = 1;
 float A_to_D= 0;
 float Vin= 5;
 float Vdrop= 0;
@@ -26,7 +27,6 @@ int buffer_arr[10],temp;
 float ph_act;
 int EC_Isolator = 8; // 3906 PNP 
 int EC_GND_Wire = 9; // 2N2222 NPN 
- 
 void setup() {
  Serial.begin(9600);
 pinMode(EC_Read,INPUT);
@@ -36,12 +36,38 @@ pinMode(EC_GND_Wire, OUTPUT);
 pinMode(3,OUTPUT);
 pinMode(4,OUTPUT);
 pinMode(5,OUTPUT);
-pinMode(6,OUTPUT);
+pinMode(6,OUTPUT);digitalWrite(EC_Isolator, HIGH);
+digitalWrite(EC_GND_Wire, LOW); 
+digitalWrite(3,HIGH);
+digitalWrite(4,HIGH);
+digitalWrite(5,HIGH);
+digitalWrite(6,HIGH);
+while (a<=5)
+{
+Serial.print(" Lần thử ");
+Serial.print(a);
+GETpH();
+Serial.println("\npH Val: ");
+Serial.print(ph_act);
+digitalWrite(EC_Isolator,LOW); 
+digitalWrite(EC_GND_Wire, HIGH);
+delay(2000);
+GETEC();
+Serial.print(" \nEC: ");
+Serial.print(EC_at_25);
+Serial.print(" milliSiemens(mS/cm) ");
+Serial.print(ppm);
+Serial.print(" ppm ");
+Serial.print(Temperature);
+Serial.println(" *C ");
+delay(2000);
+a = a+1;
+}
+// căn chỉnh hệ số k theo chất liệu đầu đo
+// Calibrate (); // sau khi căn chỉnh đặt '//' ở đầu dòng
+//
 digitalWrite(EC_Isolator, HIGH);
 digitalWrite(EC_GND_Wire, LOW); 
-// căn chỉnh hệ số k theo chất liệu đầu đo
- Calibrate (); // sau khi căn chỉnh đặt '//' ở đầu dòng
-//
 }
 
 void loop() {
